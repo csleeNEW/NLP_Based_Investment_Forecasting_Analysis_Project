@@ -1,4 +1,4 @@
-from tqdm import notebook
+from tqdm import tqdm_notebook
 import pandas as pd
 from IPython.display import clear_output
 import requests
@@ -11,6 +11,7 @@ options.add_argument('headless')  # 크롬 브라우저 팝업 뜨는 거 안보
 options.add_argument('window-size=1920x1080') # 하라는데 왜 했는 지 모르겠습니다.
 options.add_argument("disable-gpu") # 브라우저 띄울 때 gpu 쓰는 거 막아줘서 속도 향상
 options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36")
+# headless 모드를 감지하지 못하게 함
 
 
 press = {
@@ -25,21 +26,23 @@ press = {
 }             # 다른 언론사 코드 궁금하면 네이버 뉴스에서 언론사 하나씩 선택해보면서 url주소 checked 뒤에 있는 숫자 확인
 
 search_keyword = input('궁금한 종목을 입력 해주세요!: ') #종목 입력 (다른거 기사 궁금하면 다른거 입력해서 해도 됨)
+start_date = input('시작 날짜를 입력해주세요(yyyy.mm.dd): ')
+end_date = input('종료 날짜를 입력해주세요(yyyy.mm.dd): ')
+
 
 if not os.path.isdir('urls'):                                                           
     os.mkdir('urls')
 if not os.path.isdir('contents'): 
     os.mkdir('contents')
-# 경로 설정
+# 경로 잡아주기
 
 
 # url 주소를 저장할 리스트 생성
 print('urls: ')
-for i in notebook.tqdm(press):
+for i in tqdm_notebook(press):
     url_list = []
-    
     for page in range(1, 11, 10):
-        site = 'https://search.naver.com/search.naver?where=news&sm=tab_pge&query='+search_keyword+'&sort=1&photo=0&field=0&pd=3&ds=2020.06.01&de=2021.06.30&mynews=1&office_type=1&office_section_code=3&news_office_checked='+str(press.get(i))+'&nso=so:dd,p:from20200601to20210630,a:all&start='+str(page)
+        site = 'https://search.naver.com/search.naver?where=news&sm=tab_pge&query='+search_keyword+'&sort=1&photo=0&field=0&pd=3&ds='+start_date+'&de='+end_date+'&mynews=1&office_type=1&office_section_code=3&news_office_checked='+str(press.get(i))+'&nso=so:dd,p:from'+start_date[:4]+start_date[5:7]+start_date[8:10]+'to'+end_date[:4]+end_date[5:7]+end_date[8:10]+',a:all&start='+str(page)
         driver = webdriver.Chrome('./chromedriver.exe', chrome_options=options)
         driver.get(site)
         # 뉴스 url 수집하기
@@ -61,7 +64,7 @@ print('')
 
 print('contents: ')
 
-for t in notebook.tqdm(press):
+for t in tqdm_notebook(press):
     
     df = pd.read_csv('urls/'+search_keyword+'_'+t+'_urls.csv')
     urls=df.url[:]
