@@ -1,3 +1,8 @@
+'''
+http://konex.krx.co.kr/contents/MKD/04/0402/04020100/MKD04020100T3.jsp
+에서 주가를 엑셀파일로 받아와야지만 사용 가능하다.
+'''
+
 import openpyxl as op
 
 filepath = "data.xlsx"
