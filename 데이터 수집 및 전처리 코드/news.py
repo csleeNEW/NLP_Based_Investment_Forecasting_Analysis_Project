@@ -41,7 +41,7 @@ if not os.path.isdir('contents'):
 print('urls: ')
 for i in tqdm_notebook(press):
     url_list = []
-    for page in range(1, 11, 10):
+    for page in range(1, 51, 10):
         site = 'https://search.naver.com/search.naver?where=news&sm=tab_pge&query='+search_keyword+'&sort=1&photo=0&field=0&pd=3&ds='+start_date+'&de='+end_date+'&mynews=1&office_type=1&office_section_code=3&news_office_checked='+str(press.get(i))+'&nso=so:dd,p:from'+start_date[:4]+start_date[5:7]+start_date[8:10]+'to'+end_date[:4]+end_date[5:7]+end_date[8:10]+',a:all&start='+str(page)
         driver = webdriver.Chrome('./chromedriver.exe', chrome_options=options)
         driver.get(site)
@@ -102,7 +102,7 @@ for t in tqdm_notebook(press):
         driver.close()
 
     df1=pd.DataFrame(data_dict)
-    df1.to_csv('contents/'+search_keyword+'_'+t+'_news_contents.csv', encoding='utf-8-sig', index=False)
+    df1.to_csv('contents/'+start_date[:4]+start_date[5:7]+start_date[8:10]+'_'+end_date[:4]+end_date[5:7]+end_date[8:10]+search_keyword+'_'+t+'_news_contents.csv', encoding='utf-8-sig', index=False)
     print(t+" 저장완료")
 
 print('')
